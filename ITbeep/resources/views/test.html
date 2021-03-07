@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Document</title>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+            crossorigin="anonymous"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <link rel="stylesheet" href="{{asset('assets/home.css')}}" />
+        <style>
+            @import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+            .login-page {
+                width: 360px;
+                padding: 8% 0 0;
+                margin: auto;
+            }
+            .form {
+                position: relative;
+                z-index: 1;
+                background: #ffffff;
+                max-width: 360px;
+                margin: 0 auto 100px;
+                padding: 45px;
+                text-align: center;
+                box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2),
+                    0 5px 5px 0 rgba(0, 0, 0, 0.24);
+            }
+            .form input {
+                font-family: "Roboto", sans-serif;
+                outline: 0;
+                background: #f2f2f2;
+                width: 100%;
+                border: 0;
+                margin: 0 0 15px;
+                padding: 15px;
+                box-sizing: border-box;
+                font-size: 14px;
+            }
+            .form button {
+                font-family: "Roboto", sans-serif;
+                text-transform: uppercase;
+                outline: 0;
+                background: #360c36;
+                width: 100%;
+                border: 0;
+                padding: 15px;
+                color: #ffffff;
+                font-size: 14px;
+                -webkit-transition: all 0.3 ease;
+                transition: all 0.3 ease;
+                cursor: pointer;
+            }
+            .form button:hover,
+            .form button:active,
+            .form button:focus {
+                background: #d1b7cd;
+            }
+            .form .message {
+                margin: 15px 0 0;
+                color: #b3b3b3;
+                font-size: 12px;
+            }
+            .form .message a {
+                color: #4caf50;
+                text-decoration: none;
+            }
+            .form .register-form {
+                display: none;
+            }
+            .container {
+                position: relative;
+                z-index: 1;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .container:before,
+            .container:after {
+                content: "";
+                display: block;
+                clear: both;
+            }
+            .container .info {
+                margin: 50px auto;
+                text-align: center;
+            }
+            .container .info h1 {
+                margin: 0 0 15px;
+                padding: 0;
+                font-size: 36px;
+                font-weight: 300;
+                color: #1a1a1a;
+            }
+            .container .info span {
+                color: #4d4d4d;
+                font-size: 12px;
+            }
+            .container .info span a {
+                color: #000000;
+                text-decoration: none;
+            }
+            .container .info span .fa {
+                color: #ef3b3a;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="login-page">
+            <div class="form">
+                <form id="form" onsubmit=" event.preventDefault()">
+                    @csrf
+                    <input type="text" placeholder="username" name="name" />
+                    @error("name")
+                    <p style="color: red">{{$message}}</p>
+                    @enderror
+                    <input type="text" placeholder="email" name="email" />
+                    @error("email")
+                    <p style="color: red">{{$message}}</p>
+                    @enderror
+                    <input type="text" placeholder="your phone" name="phone" />
+                    @error("phone")
+                    <p style="color: red">{{$message}}</p>
+                    @enderror
+                    <input type="hidden" name="services" id="services" />
+                    <input type="hidden" name="time" id="time" />
+                    <div class="p-t-20">
+                        <button
+                            id="submit"
+                            class="btn btn-primary btn-block"
+                            data-toggle="modal"
+                            data-target="#exampleModal"
+                            data-whatever="@mdo"
+                        >
+                            Send
+                        </button>
+                    </div>
+                    <div
+                        class="modal fade"
+                        id="exampleModal1"
+                        tabindex="-1"
+                        role="dialog"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true"
+                    >
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5
+                                        class="modal-title"
+                                        id="exampleModalLabel"
+                                    >
+                                        choose your service
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        class="close"
+                                        data-dismiss="modal"
+                                        aria-label="Close"
+                                    >
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="d-flex justify-content-between">
+                                        @foreach($services as $service )
+                                        <button
+                                            data-selected="false"
+                                            type="button"
+                                            onclick="setsevice(event,'{{$service->service_name}}')"
+                                            class="btn btn-primary  {{$service->service_name}}"
+                                        >
+                                            {{$service->service_name}}
+                                        </button>
+                                        @endforeach
+                                    </div>
+                                    <button
+                                        type="button"
+                                        id="next-to-time"
+                                        class="btn btn-primary btn-block mt-4"
+                                        onclick="NextModel()"
+                                    >
+                                        next
+                                    </button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        data-dismiss="modal"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="modal fade"
+                        id="exampleModal2"
+                        tabindex="-1"
+                        role="dialog"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true"
+                    >
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5
+                                        class="modal-title"
+                                        id="exampleModalLabel"
+                                    >
+                                        choose your order
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        class="close"
+                                        data-dismiss="modal"
+                                        aria-label="Close"
+                                    >
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="d-flex justify-content-around">
+                                        @foreach($orders as $order )
+                                        <button
+                                            type="button"
+                                            onclick="submitData('{{$order->order_type}}')"
+                                            class="btn btn-primary"
+                                        >
+                                            {{$order->order_type}}
+                                        </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        data-dismiss="modal"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="modal fade"
+                        id="exampleModal3"
+                        tabindex="-1"
+                        role="dialog"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true"
+                    >
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5
+                                        class="modal-title"
+                                        id="exampleModalLabel"
+                                    >
+                                        thank you
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        class="close"
+                                        data-dismiss="modal"
+                                        aria-label="Close"
+                                    >
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="d-flex justify-content-around">
+                                        <h1>Your request has been sent !</h1>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        data-dismiss="modal"
+                                        onclick="reload()"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+
+    {{--
+    <script>
+        $(document).ready(function () {
+            $("#exampleModalCenter").modal("show");
+        });
+    </script>
+    --}}
+
+    <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"
+    ></script>
+
+    <script type="text/javascript" src="{{asset('assets/home.js')}}"></script>
+</html>
